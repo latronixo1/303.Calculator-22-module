@@ -20,6 +20,23 @@ class ViewController: UIViewController {
         
         isFinishedTypingNumber = true
         
+        guard let number = Double(displayLabel.text!) else {
+            fatalError("Cannot convert display label text to a Double")
+        }
+        
+        if let calcMethod = sender.currentTitle {
+            switch calcMethod {
+            case "AC":
+                displayLabel.text = "0"
+            case "+/-":
+                displayLabel.text = String(number * -1)
+            case "%":
+                displayLabel.text = String(number / 100)
+            default:
+                displayLabel.text = "Unknown button pressed"
+            }
+        }
+        
     }
 
     //Что произойдет когда будет нажата цифра или точка на клавиатуре
@@ -66,10 +83,8 @@ class ViewController: UIViewController {
                                 displayLabel.text = displayText + "."
                             }
                         }
-                        
                     }   //if displayText.count == 1 {
                 }   //if let displayText = displayLabel.text {
-            
             }   //if let numValue = sender.currentTitle {
     }   // @IBAction func numButtonPressed(_ sender: UIButton) {
 

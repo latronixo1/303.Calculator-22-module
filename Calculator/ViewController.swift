@@ -15,25 +15,33 @@ class ViewController: UIViewController {
     //флаг законченности набора цифр (необходимо набирать новую строку). Будет устанавливаться в true при нажатии на операцию (сложения, умножения) для начала набора новой цифры
     private var isFinishedTypingNumber: Bool = true
     
+    private var displayValue: Double {
+        get {
+            guard let number = Double(displayLabel.text!) else {
+                fatalError("Cannot convert display label text to a Double")
+            }
+            return number
+        }
+        set  {
+            displayLabel.text = String(newValue)
+        }
+    }
+    
     //What should happen when a non-number button is pressed
     @IBAction func calcButtonPressed(_ sender: UIButton) {
         
         isFinishedTypingNumber = true
         
-        guard let number = Double(displayLabel.text!) else {
-            fatalError("Cannot convert display label text to a Double")
-        }
-        
         if let calcMethod = sender.currentTitle {
             switch calcMethod {
-            case "AC":
-                displayLabel.text = "0"
             case "+/-":
-                displayLabel.text = String(number * -1)
+                displayValue *= -1
+            case "AC":
+                displayValue = 0
             case "%":
-                displayLabel.text = String(number / 100)
+                displayValue /= 100
             default:
-                displayLabel.text = "Unknown button pressed"
+                print("Unknown button pressed")
             }
         }
         
@@ -53,15 +61,11 @@ class ViewController: UIViewController {
                 
                 //следующая конструкция необходима для предотвращения повтоного ввода разделителя дробной части числа "."
                 if numValue == "." {
-                    //безопасно преобразовываем опциональную строку в Double
-                    guard let currentDisplayValue = Double(displayLabel.text!) else {
-                        fatalError("Cannot convert display label text to a Double!")
-                    }
                     //если написанное число равно ему же, но округленному в меньшую сторону
                     //иначе говоря если написанное число не содержит точки ".",
                     //иначе говоря если написанное число является целым числом,
                     //то устанавливаем isInt (это наш флаг целочисленности написанного числа) в true
-                    let isInt = floor(currentDisplayValue) == currentDisplayValue
+                    let isInt = floor(displayValue) == displayValue
                     
                     //если написанное число не Int, то больше ничего не делаем
                     if !isInt {
